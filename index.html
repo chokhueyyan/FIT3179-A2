@@ -81,6 +81,23 @@
         align-items: flex-start; /* top-align */
         flex-wrap: wrap; /* stack on small screens */
       }
+      /* .desc-title {
+        font-family: monospace;
+        text-align: center;
+        font-weight: 900;
+        font-size: x-large;
+      } */
+      .desc {
+        font-family: monospace;
+        padding: -20px;
+        text-align: center;
+        font-size: medium;
+        font-weight: 10;
+        color: rgb(88, 88, 88);
+      }
+      .dropdown {
+        font-weight: 1000;
+      }
     </style>
   </head>
   <body>
@@ -88,11 +105,20 @@
       <span class="crimes">Crimes</span> and <span class="gdp">GDP</span> (Gross
       Domestic Profit) in Malaysia from 2016 to 2023
     </h1>
+    <h5 class="desc">
+      Use the <span class="dropdown"> dropdowns </span> to filter year and/or crime type. Bars
+      show <span class="dropdown"> detailed breakdown</span>.
+    </h5>
     <div class="viz-row">
       <div id="stackednmap" class="viz"></div>
       <div id="choro" class="viz"></div>
     </div>
     <h3 class="subsection">Overview</h3>
+    <!-- <h4 class="desc-title">Crime & GDP by State (2016–2023)</h4> -->
+    <h5 class="desc">
+      Use the <span class="dropdown"> state dropdown</span> to focus any state. Lines
+      show <span class="dropdown"> year-to-year comparison</span>.
+    </h5>
     <div class="overview">
       <div id="line" class="viz"></div>
     </div>
