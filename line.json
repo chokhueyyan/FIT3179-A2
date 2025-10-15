@@ -1,5 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+
   "params": [
     {
       "name": "States",
@@ -50,9 +51,9 @@
   ],
   "hconcat": [
     {
-      "title": "Crime rate by state",
-      "width": 850,
-      "height": 500,
+      "title": "Total crimes by state",
+      "width": 550,
+      "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
@@ -61,21 +62,10 @@
         { "calculate": "year(datum.d)", "as": "yr" },
         {
           "aggregate": [
-            { "op": "sum", "field": "crimes", "as": "total_crimes" },
-            {
-              "op": "max",
-              "field": "total_population",
-              "as": "total_population"
-            }
+            { "op": "sum", "field": "crimes", "as": "total_crimes" }
           ],
           "groupby": ["state", "yr"]
         },
-        { "calculate": "datum.total_population * 1000", "as": "pop_people" },
-        {
-          "calculate": "(datum.total_crimes / datum.pop_people) * 100000",
-          "as": "crime_rate_per_100k"
-        },
-
         { "filter": "States == null || datum.state == States" }
       ],
       "mark": {
@@ -92,9 +82,9 @@
           "axis": { "labelAngle": 0, "tickMinStep": 1 }
         },
         "y": {
-          "field": "crime_rate_per_100k",
+          "field": "total_crimes",
           "type": "quantitative",
-          "title": "Crime rate (per 100,000 people)",
+          "title": "Total crimes",
           "axis": { "format": ",.0f", "grid": true, "tickCount": 6 }
         },
         "color": {
@@ -107,6 +97,7 @@
               "Kedah",
               "Kelantan",
               "Kuala Lumpur",
+              "Labuan",
               "Melaka",
               "Negeri Sembilan",
               "Pahang",
@@ -141,21 +132,15 @@
         "tooltip": [
           { "field": "state", "title": "State" },
           { "field": "yr", "title": "Year" },
-          { "field": "total_crimes", "title": "Total crimes", "format": "," },
-          { "field": "pop_people", "title": "Population", "format": "," },
-          {
-            "field": "crime_rate_per_100k",
-            "title": "Crime rate /100k",
-            "format": ",.1f"
-          }
+          { "field": "total_crimes", "title": "Total crimes", "format": "," }
         ],
         "order": { "field": "yr" }
       }
     },
     {
       "title": "GDP by state (RM million)",
-      "width": 900,
-      "height": 500,
+      "width": 550,
+      "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
@@ -239,5 +224,6 @@
         "order": { "field": "yr" }
       }
     }
-  ]
+  ],
+  "spacing": 100
 }
