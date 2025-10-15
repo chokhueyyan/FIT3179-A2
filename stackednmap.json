@@ -63,8 +63,8 @@
   "vconcat": [
     {
       "title": "Total Crimes by State",
-      "width": 800,
-      "height": 450,
+      "width": 450,
+      "height": 300,
       "projection": { "type": "mercator" },
       "layer": [
         {
@@ -120,12 +120,12 @@
             "longitude": { "field": "lon", "type": "quantitative" },
             "latitude": { "field": "lat", "type": "quantitative" },
             "size": {
-              "field": "total_gdp",
+              "field": "pop_people",
               "type": "quantitative",
-              "title": "Total GDP (RM Million)",
+              "title": "Population",
               "scale": {
                 "type": "threshold",
-                "domain": [50000, 100000, 200000, 500000],
+                "domain": [1000000, 2000000, 4000000, 8000000],
                 "range": [50, 100, 190, 300, 420]
               }
             },
@@ -199,8 +199,8 @@
 
     {
       "title": "Crimes Rates by State and Type",
-      "width": 800,
-      "height": 420,
+      "width": 450,
+      "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
