@@ -1,0 +1,71 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Crimes vs GDP trajectories by state (2016–2023)",
+  "width": 1600,
+  "height": 600,
+  "data": {
+    "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+  },
+
+  "transform": [
+    { "calculate": "toDate(datum.date)", "as": "d" },
+    { "calculate": "year(datum.d)", "as": "yr" },
+    {
+      "aggregate": [
+        { "op": "sum", "field": "crimes", "as": "total_crimes" },
+        { "op": "max", "field": "total_gdp", "as": "total_gdp" }
+      ],
+      "groupby": ["state", "yr"]
+    }
+  ],
+
+  "layer": [
+    {
+      "mark": { "type": "line", "opacity": 0.45 },
+      "encoding": {
+        "x": {
+          "field": "total_crimes",
+          "type": "quantitative",
+          "axis": { "format": ",.0f" }
+        },
+        "y": {
+          "field": "total_gdp",
+          "type": "quantitative",
+          "axis": { "format": ",.0f" }
+        },
+        "detail": { "field": "state" },
+        "stroke": { "field": "state", "type": "nominal", "legend": null }
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 120,
+        "stroke": "white",
+        "strokeWidth": 0.6,
+        "opacity": 0.9
+      },
+      "encoding": {
+        "x": { "field": "total_crimes", "type": "quantitative", "title": "Crime Rates"},
+        "y": { "field": "total_gdp", "type": "quantitative", "title": "Total GDP"},
+        "color": {
+          "field": "state",
+          "type": "nominal",
+          "legend": { "columns": 1, "title": "State (click to filter)" }
+          
+        },
+        "tooltip": [
+          { "field": "state", "title": "State" },
+          { "field": "yr", "title": "Year" },
+          { "field": "total_crimes", "title": "Total Crimes", "format": "," },
+          {
+            "field": "total_gdp",
+            "title": "Total GDP (RM Million)",
+            "format": ","
+          }
+        ]
+      }
+    }
+  ]
+}

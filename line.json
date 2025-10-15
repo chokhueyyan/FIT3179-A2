@@ -1,0 +1,243 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "params": [
+    {
+      "name": "States",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "name": "Select State: ",
+        "options": [
+          null,
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Labuan",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ],
+        "labels": [
+          "All States",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Labuan",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ]
+      }
+    }
+  ],
+  "hconcat": [
+    {
+      "title": "Crime rate by state",
+      "width": 850,
+      "height": 500,
+      "data": {
+        "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+      },
+      "transform": [
+        { "calculate": "toDate(datum.date)", "as": "d" },
+        { "calculate": "year(datum.d)", "as": "yr" },
+        {
+          "aggregate": [
+            { "op": "sum", "field": "crimes", "as": "total_crimes" },
+            {
+              "op": "max",
+              "field": "total_population",
+              "as": "total_population"
+            }
+          ],
+          "groupby": ["state", "yr"]
+        },
+        { "calculate": "datum.total_population * 1000", "as": "pop_people" },
+        {
+          "calculate": "(datum.total_crimes / datum.pop_people) * 100000",
+          "as": "crime_rate_per_100k"
+        },
+
+        { "filter": "States == null || datum.state == States" }
+      ],
+      "mark": {
+        "type": "line",
+        "point": { "filled": true, "size": 60 },
+        "strokeWidth": 2,
+        "opacity": 0.95
+      },
+      "encoding": {
+        "x": {
+          "field": "yr",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": { "labelAngle": 0, "tickMinStep": 1 }
+        },
+        "y": {
+          "field": "crime_rate_per_100k",
+          "type": "quantitative",
+          "title": "Crime rate (per 100,000 people)",
+          "axis": { "format": ",.0f", "grid": true, "tickCount": 6 }
+        },
+        "color": {
+          "field": "state",
+          "type": "nominal",
+          "legend": { "title": "State", "columns": 1 },
+          "scale": {
+            "domain": [
+              "Johor",
+              "Kedah",
+              "Kelantan",
+              "Kuala Lumpur",
+              "Melaka",
+              "Negeri Sembilan",
+              "Pahang",
+              "Perak",
+              "Perlis",
+              "Pulau Pinang",
+              "Putrajaya",
+              "Sabah",
+              "Sarawak",
+              "Selangor",
+              "Terengganu"
+            ],
+            "range": [
+              "#8dd3c7",
+              "#b15928",
+              "#bebada",
+              "#fb8072",
+              "#80b1d3",
+              "#fdb462",
+              "#b3de69",
+              "#fccde5",
+              "#bc80bd",
+              "#ccebc5",
+              "#ffed6f",
+              "#8c96c6",
+              "#1b9e77",
+              "#e7298a",
+              "#66a61e"
+            ]
+          }
+        },
+        "tooltip": [
+          { "field": "state", "title": "State" },
+          { "field": "yr", "title": "Year" },
+          { "field": "total_crimes", "title": "Total crimes", "format": "," },
+          { "field": "pop_people", "title": "Population", "format": "," },
+          {
+            "field": "crime_rate_per_100k",
+            "title": "Crime rate /100k",
+            "format": ",.1f"
+          }
+        ],
+        "order": { "field": "yr" }
+      }
+    },
+    {
+      "title": "GDP by state (RM million)",
+      "width": 900,
+      "height": 500,
+      "data": {
+        "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+      },
+      "transform": [
+        { "calculate": "toDate(datum.date)", "as": "d" },
+        { "calculate": "year(datum.d)", "as": "yr" },
+        {
+          "aggregate": [
+            { "op": "max", "field": "total_gdp", "as": "total_gdp" }
+          ],
+          "groupby": ["state", "yr"]
+        },
+
+        { "filter": "States == null || datum.state == States" }
+      ],
+      "mark": {
+        "type": "line",
+        "point": { "filled": true, "size": 60 },
+        "strokeWidth": 2,
+        "opacity": 0.95
+      },
+      "encoding": {
+        "x": {
+          "field": "yr",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": { "labelAngle": 0, "tickMinStep": 1 }
+        },
+        "y": {
+          "field": "total_gdp",
+          "type": "quantitative",
+          "title": "GDP (RM Million)",
+          "axis": { "format": ",.0f", "grid": true, "tickCount": 6 }
+        },
+        "color": {
+          "field": "state",
+          "type": "nominal",
+          "legend": null,
+          "scale": {
+            "domain": [
+              "Johor",
+              "Kedah",
+              "Kelantan",
+              "Kuala Lumpur",
+              "Melaka",
+              "Negeri Sembilan",
+              "Pahang",
+              "Perak",
+              "Perlis",
+              "Pulau Pinang",
+              "Putrajaya",
+              "Sabah",
+              "Sarawak",
+              "Selangor",
+              "Terengganu"
+            ],
+            "range": [
+              "#8dd3c7",
+              "#b15928",
+              "#bebada",
+              "#fb8072",
+              "#80b1d3",
+              "#fdb462",
+              "#b3de69",
+              "#fccde5",
+              "#bc80bd",
+              "#ccebc5",
+              "#ffed6f",
+              "#8c96c6",
+              "#1b9e77",
+              "#e7298a",
+              "#66a61e"
+            ]
+          }
+        },
+        "tooltip": [
+          { "field": "state", "title": "State" },
+          { "field": "yr", "title": "Year" },
+          { "field": "total_gdp", "title": "GDP (RM Million)", "format": "," }
+        ],
+        "order": { "field": "yr" }
+      }
+    }
+  ]
+}
