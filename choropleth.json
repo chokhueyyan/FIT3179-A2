@@ -26,8 +26,8 @@
 
   "vconcat": [
     {
-      "width": 800,
-      "height": 450,
+      "width": 450,
+      "height": 300,
       "title": "GDP Density by State",
       "projection": { "type": "mercator" },
       "layer": [
@@ -139,8 +139,8 @@
     },
 
     {
-      "width": 800,
-      "height": 420,
+      "width": 450,
+      "height": 300,
       "title": "GDP by State",
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
@@ -197,5 +197,6 @@
         ]
       }
     }
-  ]
+  ],
+  "spacing": 60
 }
