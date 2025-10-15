@@ -3,297 +3,227 @@
 
   "params": [
     {
-      "name": "YearSel",
+      "name": "States",
+      "value": null,
       "bind": {
         "input": "select",
-        "options": [null, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
-        "labels": [
-          "All years",
-          "2016",
-          "2017",
-          "2018",
-          "2019",
-          "2020",
-          "2021",
-          "2022",
-          "2023"
-        ],
-        "name": "Year: "
-      }
-    },
-    {
-      "name": "TypeSel",
-      "bind": {
-        "input": "select",
+        "name": "Select State: ",
         "options": [
           null,
-          "causing_injury",
-          "murder",
-          "rape",
-          "robbery_gang_armed",
-          "robbery_gang_unarmed",
-          "robbery_solo_armed",
-          "robbery_solo_unarmed",
-          "break_in",
-          "theft_other",
-          "theft_vehicle_lorry",
-          "theft_vehicle_motorcar",
-          "theft_vehicle_motorcycle"
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Labuan",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
         ],
         "labels": [
-          "All types",
-          "causing_injury",
-          "murder",
-          "rape",
-          "robbery_gang_armed",
-          "robbery_gang_unarmed",
-          "robbery_solo_armed",
-          "robbery_solo_unarmed",
-          "break_in",
-          "theft_other",
-          "theft_vehicle_lorry",
-          "theft_vehicle_motorcar",
-          "theft_vehicle_motorcycle"
-        ],
-        "name": "Crime type: "
+          "All States",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Labuan",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ]
       }
     }
   ],
-
-  "vconcat": [
+  "hconcat": [
     {
-      "title": "Total Crimes by State",
-      "width": 450,
-      "height": 300,
-      "projection": { "type": "mercator" },
-      "layer": [
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/malaysia_map.topojson",
-            "format": {
-              "type": "topojson",
-              "feature": "ne_10m_admin_1_states_provinces"
-            }
-          },
-          "mark": { "type": "geoshape", "fill": "lightgray", "stroke": "white" }
-        },
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/malaysia_map.topojson",
-            "format": { "type": "topojson", "feature": "ne_10m_graticules_1" }
-          },
-          "mark": {
-            "type": "geoshape",
-            "stroke": "#ccc",
-            "strokeDash": [2, 2],
-            "fill": null
-          }
-        },
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
-          },
-          "transform": [
-            { "filter": "YearSel == null || year(datum.date) == YearSel" },
-            { "filter": "TypeSel == null || datum.type == TypeSel" },
-            {
-              "aggregate": [
-                { "op": "sum", "field": "crimes", "as": "total_crimes" },
-                {
-                  "op": "max",
-                  "field": "total_population",
-                  "as": "total_population"
-                },
-                { "op": "max", "field": "total_gdp", "as": "total_gdp" }
-              ],
-              "groupby": ["state", "lat", "lon"]
-            },
-            { "calculate": "datum.total_population * 1000", "as": "pop_people" }
-          ],
-          "mark": {
-            "type": "circle",
-            "opacity": 0.7,
-            "stroke": "white",
-            "strokeWidth": 0.3
-          },
-          "encoding": {
-            "longitude": { "field": "lon", "type": "quantitative" },
-            "latitude": { "field": "lat", "type": "quantitative" },
-            "size": {
-              "field": "pop_people",
-              "type": "quantitative",
-              "title": "Population",
-              "scale": {
-                "type": "threshold",
-                "domain": [1000000, 2000000, 4000000, 8000000],
-                "range": [50, 100, 190, 300, 420]
-              }
-            },
-            "color": {
-              "field": "total_crimes",
-              "type": "quantitative",
-              "title": "Total crimes",
-              "scale": {
-                "type": "threshold",
-                "domain": [50, 200, 500, 1000],
-                "range": ["#fee5d9", "#fcae91", "#fb6a4a", "#de2d26", "#a50f15"]
-              }
-            },
-            "tooltip": [
-              { "field": "state", "title": "State" },
-              { "field": "pop_people", "title": "Population", "format": "," },
-              {
-                "field": "total_crimes",
-                "title": "Total crimes",
-                "format": ","
-              },
-              { "field": "total_gdp", "title": "GDP", "format": "," }
-            ]
-          }
-        },
-        {
-          "data": {
-            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
-          },
-          "transform": [
-            { "filter": "YearSel == null || year(datum.date) == YearSel" },
-            { "filter": "TypeSel == null || datum.type == TypeSel" },
-            {
-              "aggregate": [
-                { "op": "sum", "field": "crimes", "as": "total_crimes" },
-                {
-                  "op": "max",
-                  "field": "total_population",
-                  "as": "total_population"
-                },
-                { "op": "max", "field": "total_gdp", "as": "total_gdp" }
-              ],
-              "groupby": ["state", "lat", "lon"]
-            },
-            {
-              "filter": "indexof(['Perlis', 'Pulau Pinang', 'Terengganu', 'Pahang', 'Selangor','Johor','Sabah','Sarawak'], datum.state) >= 0"
-            },
-            {
-              "calculate": "datum.state == 'Sabah' || datum.state == 'Sarawak' ? 12 : -8",
-              "as": "dy"
-            }
-          ],
-          "mark": {
-            "type": "text",
-            "align": "right",
-            "baseline": "middle",
-            "dx": -12,
-            "fontSize": 11.5,
-            "fontStyle": "italic"
-          },
-          "encoding": {
-            "longitude": { "field": "lon", "type": "quantitative" },
-            "latitude": { "field": "lat", "type": "quantitative" },
-            "dy": { "field": "dy", "type": "quantitative" },
-            "text": { "field": "state" },
-            "color": { "value": "black" }
-          }
-        }
-      ]
-    },
-
-    {
-      "title": "Crimes Rates by State and Type",
-      "width": 450,
+      "title": "Total crimes by state",
+      "width": 550,
       "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
-
-      "params": [
-        {
-          "name": "TypeLegend",
-          "select": { "type": "point", "fields": ["type"], "empty": "all" },
-          "bind": "legend"
-        }
-      ],
-
       "transform": [
-        { "calculate": "year(toDate(datum.date))", "as": "yr" },
-        { "filter": "YearSel == null || datum.yr == YearSel" },
-        { "filter": "TypeSel == null || datum.type == TypeSel" },
-        { "filter": { "param": "TypeLegend" } },
+        { "calculate": "toDate(datum.date)", "as": "d" },
+        { "calculate": "year(datum.d)", "as": "yr" },
         {
           "aggregate": [
             { "op": "sum", "field": "crimes", "as": "total_crimes" }
           ],
-          "groupby": ["state", "type"]
-        }
+          "groupby": ["state", "yr"]
+        },
+        { "filter": "States == null || datum.state == States" }
       ],
-
-      "mark": { "type": "bar" },
-
+      "mark": {
+        "type": "line",
+        "point": { "filled": true, "size": 60 },
+        "strokeWidth": 2,
+        "opacity": 0.95
+      },
       "encoding": {
         "x": {
-          "field": "state",
-          "type": "nominal",
-          "title": "State",
-          "axis": { "labelAngle": -35 },
-          "sort": {
-            "op": "sum",
-            "field": "total_crimes",
-            "order": "descending"
-          }
+          "field": "yr",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": { "labelAngle": 0, "tickMinStep": 1 }
         },
         "y": {
           "field": "total_crimes",
           "type": "quantitative",
           "title": "Total crimes",
-          "axis": { "format": ",.0f", "tickCount": 6 }
+          "axis": { "format": ",.0f", "grid": true, "tickCount": 6 }
         },
         "color": {
-          "field": "type",
+          "field": "state",
           "type": "nominal",
-          "legend": {
-            "title": "Crime Type (Click to filter)",
-            "columns": 1
-          },
+          "legend": { "title": "State", "columns": 1 },
           "scale": {
             "domain": [
-              "causing_injury",
-              "murder",
-              "rape",
-              "robbery_gang_armed",
-              "robbery_gang_unarmed",
-              "robbery_solo_armed",
-              "robbery_solo_unarmed",
-              "break_in",
-              "theft_other",
-              "theft_vehicle_lorry",
-              "theft_vehicle_motorcar",
-              "theft_vehicle_motorcycle"
+              "Johor",
+              "Kedah",
+              "Kelantan",
+              "Kuala Lumpur",
+              "Labuan",
+              "Melaka",
+              "Negeri Sembilan",
+              "Pahang",
+              "Perak",
+              "Perlis",
+              "Pulau Pinang",
+              "Putrajaya",
+              "Sabah",
+              "Sarawak",
+              "Selangor",
+              "Terengganu"
             ],
             "range": [
-              "#a6cee3",
-              "#1f78b4",
-              "#b2df8a",
-              "#33a02c",
-              "#fb9a99",
-              "#e31a1c",
-              "#fdbf6f",
-              "#ff7f00",
-              "#cab2d6",
-              "#6a3d9a",
-              "#ffff99",
-              "#b15928"
+              "#8dd3c7",
+              "#b15928",
+              "#bebada",
+              "#fb8072",
+              "#80b1d3",
+              "#fdb462",
+              "#b3de69",
+              "#fccde5",
+              "#bc80bd",
+              "#ccebc5",
+              "#ffed6f",
+              "#8c96c6",
+              "#1b9e77",
+              "#e7298a",
+              "#66a61e"
             ]
           }
         },
-
-        "order": { "field": "type" },
         "tooltip": [
           { "field": "state", "title": "State" },
-          { "field": "type", "title": "Crime type" },
+          { "field": "yr", "title": "Year" },
           { "field": "total_crimes", "title": "Total crimes", "format": "," }
-        ]
+        ],
+        "order": { "field": "yr" }
+      }
+    },
+    {
+      "title": "GDP by state (RM million)",
+      "width": 550,
+      "height": 300,
+      "data": {
+        "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+      },
+      "transform": [
+        { "calculate": "toDate(datum.date)", "as": "d" },
+        { "calculate": "year(datum.d)", "as": "yr" },
+        {
+          "aggregate": [
+            { "op": "max", "field": "total_gdp", "as": "total_gdp" }
+          ],
+          "groupby": ["state", "yr"]
+        },
+
+        { "filter": "States == null || datum.state == States" }
+      ],
+      "mark": {
+        "type": "line",
+        "point": { "filled": true, "size": 60 },
+        "strokeWidth": 2,
+        "opacity": 0.95
+      },
+      "encoding": {
+        "x": {
+          "field": "yr",
+          "type": "ordinal",
+          "title": "Year",
+          "axis": { "labelAngle": 0, "tickMinStep": 1 }
+        },
+        "y": {
+          "field": "total_gdp",
+          "type": "quantitative",
+          "title": "GDP (RM Million)",
+          "axis": { "format": ",.0f", "grid": true, "tickCount": 6 }
+        },
+        "color": {
+          "field": "state",
+          "type": "nominal",
+          "legend": null,
+          "scale": {
+            "domain": [
+              "Johor",
+              "Kedah",
+              "Kelantan",
+              "Kuala Lumpur",
+              "Melaka",
+              "Negeri Sembilan",
+              "Pahang",
+              "Perak",
+              "Perlis",
+              "Pulau Pinang",
+              "Putrajaya",
+              "Sabah",
+              "Sarawak",
+              "Selangor",
+              "Terengganu"
+            ],
+            "range": [
+              "#8dd3c7",
+              "#b15928",
+              "#bebada",
+              "#fb8072",
+              "#80b1d3",
+              "#fdb462",
+              "#b3de69",
+              "#fccde5",
+              "#bc80bd",
+              "#ccebc5",
+              "#ffed6f",
+              "#8c96c6",
+              "#1b9e77",
+              "#e7298a",
+              "#66a61e"
+            ]
+          }
+        },
+        "tooltip": [
+          { "field": "state", "title": "State" },
+          { "field": "yr", "title": "Year" },
+          { "field": "total_gdp", "title": "GDP (RM Million)", "format": "," }
+        ],
+        "order": { "field": "yr" }
       }
     }
   ],
-
-  "resolve": { "scale": { "color": "independent", "size": "independent" } }
+  "spacing": 100
 }
