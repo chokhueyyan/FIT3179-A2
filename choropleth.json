@@ -21,6 +21,50 @@
         ],
         "name": "Year: "
       }
+    },
+    {
+      "name": "States",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "name": "State: ",
+        "options": [
+          null,
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ],
+        "labels": [
+          "All States",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ]
+      }
     }
   ],
 
@@ -29,7 +73,7 @@
       "width": 450,
       "height": 300,
       "title": "GDP Density by State",
-      "projection": { "type": "mercator" },
+      "projection": { "type": "equalEarth" },
       "layer": [
         {
           "data": {
@@ -40,6 +84,8 @@
             { "calculate": "year(datum.d)", "as": "yr" },
             { "calculate": "toNumber(datum['gdp/pop'])", "as": "gdp_per_pop" },
             { "filter": "YearSel != null ? datum.yr == YearSel : true" },
+            { "filter": "States == null || datum.state == States" },
+
             {
               "aggregate": [{ "op": "argmax", "field": "d", "as": "row" }],
               "groupby": ["state"]
@@ -73,7 +119,7 @@
               "scale": {
                 "type": "threshold",
                 "domain": [30, 60, 100, 150],
-                "range": ["#edf8fb", "#b2e2e2", "#66c2a4", "#2ca25f", "#006d2c"]
+                "range": ["#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837"]
               }
             },
             "tooltip": [
@@ -107,12 +153,14 @@
           },
           "transform": [
             { "filter": "YearSel == null || year(datum.date) == YearSel" },
+            { "filter": "States == null || datum.state == States" },
+
             {
               "aggregate": [{ "op": "argmax", "field": "date", "as": "row" }],
               "groupby": ["state", "lat", "lon"]
             },
             {
-              "filter": "indexof(['Perlis','Pulau Pinang','Terengganu','Pahang','Selangor','Johor','Sabah','Sarawak'], datum.state) >= 0"
+              "filter": "indexof(['Perlis','Pulau Pinang','Selangor','Johor','Sabah','Sarawak'], datum.state) >= 0"
             },
             {
               "calculate": "datum.state == 'Sabah' || datum.state == 'Sarawak' ? 12 : -8",
@@ -124,7 +172,7 @@
             "align": "right",
             "baseline": "middle",
             "dx": -12,
-            "fontSize": 11.5,
+            "fontSize": 8,
             "fontStyle": "italic"
           },
           "encoding": {
@@ -150,6 +198,8 @@
         { "calculate": "year(datum.d)", "as": "yr" },
         { "calculate": "toNumber(datum['gdp/pop'])", "as": "gdp_per_pop" },
         { "filter": "YearSel != null ? datum.yr == YearSel : true" },
+        { "filter": "States == null || datum.state == States" },
+
         {
           "aggregate": [{ "op": "argmax", "field": "d", "as": "row" }],
           "groupby": ["state"]
