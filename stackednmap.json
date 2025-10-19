@@ -1,6 +1,5 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-
   "params": [
     {
       "name": "YearSel",
@@ -45,27 +44,70 @@
           "causing_injury",
           "murder",
           "rape",
-          "robbery_gang_armed",
-          "robbery_gang_unarmed",
-          "robbery_solo_armed",
-          "robbery_solo_unarmed",
-          "break_in",
-          "theft_other",
-          "theft_vehicle_lorry",
-          "theft_vehicle_motorcar",
-          "theft_vehicle_motorcycle"
+          "robbery gang armed",
+          "robbery gang unarmed",
+          "robbery solo armed",
+          "robbery solo unarmed",
+          "break in",
+          "theft other",
+          "theft vehicle lorry",
+          "theft vehicle motorcar",
+          "theft vehicle motorcycle"
         ],
         "name": "Crime type: "
       }
+    },
+    {
+      "name": "States",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "name": "State: ",
+        "options": [
+          null,
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ],
+        "labels": [
+          "All States",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ]
+      }
     }
   ],
-
   "vconcat": [
     {
       "title": "Total Crimes by State",
-      "width": 450,
+      "width": 400,
       "height": 300,
-      "projection": { "type": "mercator" },
+      "projection": { "type": "equalEarth" },
       "layer": [
         {
           "data": {
@@ -96,6 +138,8 @@
           "transform": [
             { "filter": "YearSel == null || year(datum.date) == YearSel" },
             { "filter": "TypeSel == null || datum.type == TypeSel" },
+            { "filter": "States == null || datum.state == States" },
+
             {
               "aggregate": [
                 { "op": "sum", "field": "crimes", "as": "total_crimes" },
@@ -125,7 +169,7 @@
               "title": "Population",
               "scale": {
                 "type": "threshold",
-                "domain": [1000000, 2000000, 4000000, 8000000],
+                "domain": [1000000, 2000000, 4000000, 7000000],
                 "range": [50, 100, 190, 300, 420]
               }
             },
@@ -136,7 +180,7 @@
               "scale": {
                 "type": "threshold",
                 "domain": [50, 200, 500, 1000],
-                "range": ["#fee5d9", "#fcae91", "#fb6a4a", "#de2d26", "#a50f15"]
+                "range": ["#f1eef6", "#d7b5d8", "#df65b0", "#dd1c77", "#980043"]
               }
             },
             "tooltip": [
@@ -158,6 +202,8 @@
           "transform": [
             { "filter": "YearSel == null || year(datum.date) == YearSel" },
             { "filter": "TypeSel == null || datum.type == TypeSel" },
+            { "filter": "States == null || datum.state == States" },
+
             {
               "aggregate": [
                 { "op": "sum", "field": "crimes", "as": "total_crimes" },
@@ -171,7 +217,7 @@
               "groupby": ["state", "lat", "lon"]
             },
             {
-              "filter": "indexof(['Perlis', 'Pulau Pinang', 'Terengganu', 'Pahang', 'Selangor','Johor','Sabah','Sarawak'], datum.state) >= 0"
+              "filter": "indexof(['Perlis', 'Pulau Pinang', 'Selangor','Johor','Sabah','Sarawak'], datum.state) >= 0"
             },
             {
               "calculate": "datum.state == 'Sabah' || datum.state == 'Sarawak' ? 12 : -8",
@@ -183,7 +229,7 @@
             "align": "right",
             "baseline": "middle",
             "dx": -12,
-            "fontSize": 11.5,
+            "fontSize": 8,
             "fontStyle": "italic"
           },
           "encoding": {
@@ -193,18 +239,71 @@
             "text": { "field": "state" },
             "color": { "value": "black" }
           }
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+          },
+          "transform": [
+            { "filter": "YearSel == null || year(datum.date) == YearSel" },
+            { "filter": "TypeSel == null || datum.type == TypeSel" },
+            { "filter": "States == null || datum.state == States" },
+
+            {
+              "aggregate": [
+                { "op": "sum", "field": "crimes", "as": "total_crimes" },
+                {
+                  "op": "max",
+                  "field": "total_population",
+                  "as": "total_population"
+                }
+              ],
+              "groupby": ["state", "lat", "lon"]
+            },
+            {
+              "calculate": "datum.total_population * 1000",
+              "as": "pop_people"
+            },
+            {
+              "window": [{ "op": "rank", "as": "rk" }],
+              "sort": [
+                { "field": "pop_people", "order": "descending" },
+                { "field": "state", "order": "ascending" }
+              ]
+            },
+            { "filter": "datum.rk == 1" },
+
+            {
+              "calculate": "datum.state + ' has the highest population'",
+              "as": "label"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "bottom",
+            "dx": 8,
+            "dy": -6,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "black",
+            "strokeWidth": 3
+          },
+          "encoding": {
+            "longitude": { "field": "lon", "type": "quantitative" },
+            "latitude": { "field": "lat", "type": "quantitative" },
+            "text": { "field": "label" }
+          }
         }
       ]
     },
-
     {
       "title": "Crimes Rates by State and Type",
-      "width": 450,
+      "width": 400,
       "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
-
       "params": [
         {
           "name": "TypeLegend",
@@ -212,12 +311,13 @@
           "bind": "legend"
         }
       ],
-
       "transform": [
         { "calculate": "year(toDate(datum.date))", "as": "yr" },
         { "filter": "YearSel == null || datum.yr == YearSel" },
         { "filter": "TypeSel == null || datum.type == TypeSel" },
         { "filter": { "param": "TypeLegend" } },
+        { "filter": "States == null || datum.state == States" },
+
         {
           "aggregate": [
             { "op": "sum", "field": "crimes", "as": "total_crimes" }
@@ -225,9 +325,7 @@
           "groupby": ["state", "type"]
         }
       ],
-
       "mark": { "type": "bar" },
-
       "encoding": {
         "x": {
           "field": "state",
@@ -246,12 +344,18 @@
           "title": "Total crimes",
           "axis": { "format": ",.0f", "tickCount": 6 }
         },
+        "order": {
+          "field": "total_crimes",
+          "type": "quantitative",
+          "sort": "descending"
+        },
         "color": {
           "field": "type",
           "type": "nominal",
           "legend": {
             "title": "Crime Type (Click to filter)",
-            "columns": 1
+            "columns": 1,
+            "labelExpr": "replace(datum.label, /_/g, ' ')"
           },
           "scale": {
             "domain": [
@@ -271,8 +375,8 @@
             "range": [
               "#a6cee3",
               "#1f78b4",
-              "#b2df8a",
-              "#33a02c",
+              "#c994c7",
+              "#999999",
               "#fb9a99",
               "#e31a1c",
               "#fdbf6f",
@@ -282,10 +386,13 @@
               "#ffff99",
               "#b15928"
             ]
+          },
+          "sort": {
+            "op": "sum",
+            "field": "total_crimes",
+            "order": "descending"
           }
         },
-
-        "order": { "field": "type" },
         "tooltip": [
           { "field": "state", "title": "State" },
           { "field": "type", "title": "Crime type" },
@@ -294,6 +401,6 @@
       }
     }
   ],
-
-  "resolve": { "scale": { "color": "independent", "size": "independent" } }
+  "resolve": { "scale": { "color": "independent", "size": "independent" } },
+  "spacing": 35
 }
