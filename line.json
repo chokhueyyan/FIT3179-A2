@@ -14,7 +14,6 @@
           "Kedah",
           "Kelantan",
           "Kuala Lumpur",
-          "Labuan",
           "Melaka",
           "Negeri Sembilan",
           "Pahang",
@@ -33,7 +32,6 @@
           "Kedah",
           "Kelantan",
           "Kuala Lumpur",
-          "Labuan",
           "Melaka",
           "Negeri Sembilan",
           "Pahang",
@@ -47,12 +45,23 @@
           "Terengganu"
         ]
       }
+    },
+    {
+      "name": "YearFrom",
+      "value": 2016,
+      "bind": {
+        "input": "range",
+        "min": 2016,
+        "max": 2023,
+        "step": 1,
+        "name": "From year: "
+      }
     }
   ],
   "hconcat": [
     {
       "title": "Total crimes by state",
-      "width": 550,
+      "width": 500,
       "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
@@ -60,6 +69,8 @@
       "transform": [
         { "calculate": "toDate(datum.date)", "as": "d" },
         { "calculate": "year(datum.d)", "as": "yr" },
+        { "filter": "datum.yr >= YearFrom" },
+
         {
           "aggregate": [
             { "op": "sum", "field": "crimes", "as": "total_crimes" }
@@ -97,7 +108,6 @@
               "Kedah",
               "Kelantan",
               "Kuala Lumpur",
-              "Labuan",
               "Melaka",
               "Negeri Sembilan",
               "Pahang",
@@ -139,7 +149,7 @@
     },
     {
       "title": "GDP by state (RM million)",
-      "width": 550,
+      "width": 500,
       "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
@@ -147,6 +157,8 @@
       "transform": [
         { "calculate": "toDate(datum.date)", "as": "d" },
         { "calculate": "year(datum.d)", "as": "yr" },
+        { "filter": "datum.yr >= YearFrom" },
+
         {
           "aggregate": [
             { "op": "max", "field": "total_gdp", "as": "total_gdp" }
