@@ -2,125 +2,334 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script> -->
-    <!-- upgrade these three -->
+    <!-- Fixed layout width to keep a consistent canvas -->
+    <meta name="viewport" content="width=1280, initial-scale=1" />
+
+    <!-- Vega libs -->
     <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.17.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
 
-    <script src="choro.js"></script>
+    <!-- Your chart scripts -->
     <script src="stackednmap.js"></script>
-    <script src="scatter.js"></script>
+    <script src="choro.js"></script>
     <script src="line.js"></script>
+    <script src="scatter.js"></script>
 
     <title>FIT3179 A2</title>
+
     <style>
-      .viz-row {
-        display: flex;
-        gap: 16px; /* space between charts */
-        align-items: flex-start; /* top-align */
-        flex-wrap: wrap; /* stack on small screens */
+      /* ---------- Base & page shell ---------- */
+      * {
+        box-sizing: border-box;
       }
-      .viz {
-        flex: 1 1 600px; /* grow, shrink, base width */
-        min-width: 320px; /* prevents squishing too much */
+      body {
+        margin: 0;
+        background: #fafafa;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Arial, sans-serif;
+        color: #111;
       }
-      @media (max-width: 1000px) {
-        .viz {
-          flex-basis: 100%;
-        } /* stack vertically on narrow screens */
-      } /* title colors (match your maps) */
+      :root {
+        --page-width: 1400px; /* was 1300px */
+        --cards-gap: 20px; /* space between the two cards */
+        --viz-min-height: 460px; /* was 360–380px */
+      }
+      .page {
+        width: var(--page-width);
+        margin: 24px auto 64px;
+        padding: 0 16px;
+        overflow-x: auto; /* small screens can scroll horizontally */
+      }
+
+      /* ---------- Title & helper text ---------- */
       .title {
-        font-family: monospace;
         text-align: center;
-        padding: 15px;
         font-weight: 900;
-        font-size: xxx-large;
-        /* background-color: beige; */
-        background: linear-gradient(90deg, #fde2e0 0%, #e6f4ea 100%);
+        font-size: 42px;
+        line-height: 1.15;
+        background: linear-gradient(90deg, #f6d7fc 0%, #ebfcde 100%);
         border-radius: 14px;
         padding: 16px 24px;
-        margin: 16px 0;
+        margin: 0 0 10px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        font-family:Georgia, 'Times New Roman', Times, serif;
       }
       .title .crimes {
-        color: #a50f15;
-        font-weight: bolder;
-      } /* red for Crimes */
+        color: #980043;
+      }
       .title .gdp {
-        color: #006d2c;
-      } /* green for GDP  */
-      .vega-embed {
-        display: flex;
-        flex-direction: column; /* stack children vertically */
+        color: #006837;
       }
-      .vega-embed .vega-bindings {
-        order: -1; /* move the controls to the top */
-        margin-bottom: 8px; /* some spacing under the controls */
-      }
-      .subsection {
-        font-family: monospace;
+
+      .subtitle {
         text-align: center;
-        padding: 15px;
-        font-weight: 900;
-        font-size: xx-large;
-        /* background-color: beige; */
-        background: linear-gradient(90deg, #fde2e0 0%, #e6f4ea 100%);
-        border-radius: 10px;
-        padding: 10px 16px;
-        margin: 24px 0 8px;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-      }
-      .overview {
-        display: flex;
-        gap: 16px; /* space between charts */
-        align-items: flex-start; /* top-align */
-        flex-wrap: wrap; /* stack on small screens */
-      }
-      /* .desc-title {
-        font-family: monospace;
-        text-align: center;
-        font-weight: 900;
-        font-size: x-large;
-      } */
-      .desc {
-        font-family: monospace;
-        padding: -20px;
-        text-align: center;
-        font-size: medium;
-        font-weight: 10;
-        color: rgb(88, 88, 88);
+        color: #5a5a5a;
+        margin: 6px 0 22px;
+        font-size: 14px;
       }
       .dropdown {
-        font-weight: 1000;
+        font-weight: 800;
       }
+
+      /* ---------- Cards ---------- */
+      .card {
+        background: #fff;
+        border: 1px solid #ececec;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        padding: 16px 18px 18px;
+        margin-bottom: 22px;
+      }
+      .card__header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .card__title {
+        margin: 0;
+        font-weight: 800;
+        font-size: 18px;
+        text-align: center;
+      }
+      .card__desc {
+        margin: 8px auto 14px;
+        color: #666;
+        font-size: 14px;
+        text-align: center;
+        max-width: 980px;
+      }
+      /* row to place two cards side-by-side */
+      .cards-row {
+        display: flex;
+        gap: var(--cards-gap);
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      /* make each card take half the row */
+      .card--half {
+        flex: 1 1 0;
+        width: calc(50% - (var(--cards-gap) / 2));
+        min-width: 0; /* allow charts to shrink inside */
+      }
+
+      /* optional: keep a tidy chart area height */
+      .vizbox {
+        min-height: var(--viz-min-height);
+      }
+
+      /* optional safety: stack on very narrow screens */
+      @media (max-width: 1000px) {
+        .cards-row {
+          flex-wrap: wrap;
+        }
+        .card--half {
+          width: 100%;
+        }
+      }
+
+      /* Viz container inside a card */
+      .vizbox {
+        background: #fff;
+        border: 1px solid #efefef;
+        border-radius: 10px;
+        padding: 10px;
+        min-height: 360px; /* avoids layout jump while loading */
+      }
+      .metadatabox {
+        background: #fff;
+        border: 1px solid #efefef;
+        border-radius: 10px;
+        padding: 10px;
+        min-height: 50px;
+      }
+
+      .metadata {
+        font-size: 8px;
+        color:#666;
+      }
+
+      /* ---------- Section heading ---------- */
+      .subsection {
+        text-align: center;
+        font-weight: 900;
+        font-size: 24px;
+        background: linear-gradient(90deg, #f6d7fc 0%, #d6fcba 100%);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        padding: 10px 16px;
+        margin: 28px 0 12px;
+        font-family:Georgia, 'Times New Roman', Times, serif;
+      }
+
+      /* Make the inner wrapper a column so we can reorder its children */
+      .vizbox .vega-embed .chart-wrapper {
+        display: flex;
+        flex-direction: column; /* controls + chart stacked top→bottom */
+      }
+
+      /* Put the controls ABOVE the chart, center them, and match styling */
+      .vizbox .vega-embed .chart-wrapper .vega-bindings {
+        order: -1; /* move before the chart */
+        align-self: center; /* center inside the card */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 12px;
+        background: #f2f3f5;
+        border: 1px solid #e3e5e8;
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin: 8px 0 12px;
+      }
+      /* make the map cards taller */
+      .card--half .vizbox {
+        min-height: 640px; /* try 640–720 depending on your specs */
+        overflow: hidden; /* clip anything that bleeds out */
+      }
+
+      /* also clip the whole card just in case */
+      .card {
+        overflow: hidden;
+      }
+
+      /* Keep the chart itself after the controls */
+      .vizbox .vega-embed .chart-wrapper .vega-view {
+        order: 0;
+      }
+
+      /* Optional: make both cards’ controls the same width so they align */
+      .cards-row .card .vega-bindings {
+        min-width: 420px; /* tweak to taste (or remove) */
+        justify-content: center;
+      }
+
+      .vizbox,
+      .vizbox > div {
+        width: 100%;
+      }
+
+      /* ---------- Vega-Embed tweaks: controls on top, grey toolbar ---------- */
+      .vega-embed {
+        display: flex;
+        flex-direction: column;
+      }
+      .vega-embed .vega-bindings {
+        order: -1; /* show above the chart */
+        align-self: center;
+        background: #f2f3f5;
+        border: 1px solid #e3e5e8;
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        justify-content: center;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .vega-embed .vega-bindings label {
+        font: 600 12px/1.2 system-ui, sans-serif;
+        color: #444;
+        margin-right: 6px;
+      }
+      .vega-embed .vega-bindings select {
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #cfd3da;
+        background: #fff;
+      }
+
+      /* Prevent Vega from forcing responsive size; let specs decide sizes */
+      .vega-embed {
+        max-width: none !important;
+      }
+
+      /* Keep the three-dots icon small */
+      .vega-actions svg {
+        width: 16px !important;
+        height: 16px !important;
+      }
+
+
     </style>
   </head>
+
   <body>
-    <h1 class="title">
-      <span class="crimes">Crimes</span> and <span class="gdp">GDP</span> (Gross
-      Domestic Profit) in Malaysia from 2016 to 2023
-    </h1>
-    <h5 class="desc">
-      Use the <span class="dropdown"> dropdowns </span> to filter year and/or crime type. Bars
-      show <span class="dropdown"> detailed breakdown</span>.
-    </h5>
-    <div class="viz-row">
-      <div id="stackednmap" class="viz"></div>
-      <div id="choro" class="viz"></div>
-    </div>
-    <h3 class="subsection">Overview</h3>
-    <!-- <h4 class="desc-title">Crime & GDP by State (2016–2023)</h4> -->
-    <h5 class="desc">
-      Use the <span class="dropdown"> state dropdown</span> to focus any state. Lines
-      show <span class="dropdown"> year-to-year comparison</span>.
-    </h5>
-    <div class="overview">
-      <div id="line" class="viz"></div>
+    <div class="page">
+      <h1 class="title">
+        <span class="crimes">Crimes</span> and
+        <span class="gdp">GDP</span> (Gross Domestic Profit) in Malaysia from
+        2016 to 2023
+      </h1>
+      <p class="subtitle">
+        Use the <span class="dropdown">dropdowns</span> to filter year and/or
+        crime type. Bars show <span class="dropdown">detailed breakdown</span>.
+      </p>
+
+      <!-- Two map cards side-by-side -->
+      <div class="cards-row">
+        <!-- Card A: Total Crimes map -->
+        <section class="card card--half">
+          <div class="card__header">
+            <h2 class="card__title">Total Crimes by State</h2>
+          </div>
+          <p class="card__desc">
+            Circle size shows population; color shows total crimes. Toggle year
+            and type above.
+          </p>
+          <div class="vizbox">
+            <div id="stackednmap"></div>
+          </div>
+        </section>
+
+        <!-- Card B: GDP Density map -->
+        <section class="card card--half">
+          <div class="card__header">
+            <h2 class="card__title">GDP Density by State</h2>
+          </div>
+          <p class="card__desc">
+            Darker greens indicate higher GDP per person (GDP ÷ population). Use
+            the controls above to switch year.
+          </p>
+          <div class="vizbox">
+            <div id="choro"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Overview heading + Card C: Lines (line.js renders into #line) -->
+      <h3 class="subsection">Overview</h3>
+      <section class="card">
+        <p class="card__desc">
+          Use the <span class="dropdown">state selector</span> to focus any
+          state. Lines show year-to-year trajectories from 2016–2023.
+        </p>
+        <div class="vizbox">
+          <div id="line"></div>
+        </div>
+      </section>
+
+       <h3 class="subsection">Comparison</h3>
+      <section class="card">
+        <p class="card__desc">
+          Use the <span class="dropdown">state selector</span> to focus any
+          state. Lines show year-to-year trajectories from 2016–2023.
+        </p>
+        <div class="vizbox">
+          <div id="scatter"></div>
+        </div>
+      </section>
+       <div class="metadatabox">
+          <div class="metadata">Created by Chok Huey Yan on 19 Oct 2025 <br><br></br>Data Sources:</br> 
+            <br>  1. crime - https://data.gov.my/data-catalogue/crime_district?state=johor&district=all&category=assault&type=theft-other&visual=table  </br>
+<br>2. malaysia coords - https://www.kaggle.com/datasets/mypapit/malaysiancity   </br>
+<br>3. education - https://open.dosm.gov.my/data-catalogue/completion_school_state?state=johor&stage=secondary-upper&sex=male&visual=table   </br>
+<br>4. population - https://open.dosm.gov.my/data-catalogue/population_state?state=kedah&visual=table   </br>
+<br>5. economy - https://open.dosm.gov.my/data-catalogue/gdp_state_real_supply?series=abs&state=kelantan&sector=p0&visual=table </br>
+</div>
+        </div>
     </div>
   </body>
 </html>
