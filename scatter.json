@@ -1,15 +1,75 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Crimes vs GDP trajectories by state (2016–2023)",
-  "width": 1600,
+  "title": "Crimes vs GDP trajectories by state",
+  "width": 1100,
   "height": 600,
+
   "data": {
     "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
   },
 
+  "params": [
+    {
+      "name": "States",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "name": "Select State: ",
+        "options": [
+          null,
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ],
+        "labels": [
+          "All States",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ]
+      }
+    },
+    {
+      "name": "YearFrom",
+      "value": 2016,
+      "bind": {
+        "input": "range",
+        "min": 2016,
+        "max": 2023,
+        "step": 1,
+        "name": "From year: "
+      }
+    }
+  ],
+
   "transform": [
     { "calculate": "toDate(datum.date)", "as": "d" },
     { "calculate": "year(datum.d)", "as": "yr" },
+    { "filter": "States == null || datum.state == States" },
     {
       "aggregate": [
         { "op": "sum", "field": "crimes", "as": "total_crimes" },
@@ -19,9 +79,54 @@
     }
   ],
 
+  "encoding": {
+    "color": {
+      "field": "state",
+      "type": "nominal",
+      "legend": { "columns": 1, "title": "State" },
+      "scale": {
+        "domain": [
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Kuala Lumpur",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Putrajaya",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu"
+        ],
+        "range": [
+          "#8dd3c7",
+          "#b15928",
+          "#bebada",
+          "#fb8072",
+          "#80b1d3",
+          "#fdb462",
+          "#b3de69",
+          "#fccde5",
+          "#bc80bd",
+          "#ccebc5",
+          "#ffed6f",
+          "#8c96c6",
+          "#1b9e77",
+          "#e7298a",
+          "#66a61e"
+        ]
+      }
+    }
+  },
+
   "layer": [
     {
-      "mark": { "type": "line", "opacity": 0.45 },
+      "transform": [{ "filter": "datum.yr >= YearFrom" }],
+      "mark": { "type": "line" },
       "encoding": {
         "x": {
           "field": "total_crimes",
@@ -33,27 +138,29 @@
           "type": "quantitative",
           "axis": { "format": ",.0f" }
         },
-        "detail": { "field": "state" },
-        "stroke": { "field": "state", "type": "nominal", "legend": null }
+        "detail": { "field": "state" }
       }
     },
     {
+      "transform": [{ "filter": "datum.yr >= YearFrom" }],
+
       "mark": {
         "type": "point",
         "filled": true,
         "size": 120,
         "stroke": "white",
-        "strokeWidth": 0.6,
-        "opacity": 0.9
+        "strokeWidth": 0.6
       },
       "encoding": {
-        "x": { "field": "total_crimes", "type": "quantitative", "title": "Crime Rates"},
-        "y": { "field": "total_gdp", "type": "quantitative", "title": "Total GDP"},
-        "color": {
-          "field": "state",
-          "type": "nominal",
-          "legend": { "columns": 1, "title": "State (click to filter)" }
-          
+        "x": {
+          "field": "total_crimes",
+          "type": "quantitative",
+          "title": "Total Crimes"
+        },
+        "y": {
+          "field": "total_gdp",
+          "type": "quantitative",
+          "title": "Total GDP (RM Million)"
         },
         "tooltip": [
           { "field": "state", "title": "State" },
