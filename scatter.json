@@ -27,7 +27,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -45,7 +44,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -83,7 +81,7 @@
     "color": {
       "field": "state",
       "type": "nominal",
-      "legend": { "columns": 1, "title": "State" },
+      "legend": { "columns": 1, "title": "State", "symbolOpacity": 1 },
       "scale": {
         "domain": [
           "Johor",
@@ -96,7 +94,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -116,8 +113,7 @@
           "#ffed6f",
           "#8c96c6",
           "#1b9e77",
-          "#e7298a",
-          "#66a61e"
+          "#e7298a"
         ]
       }
     }
@@ -172,6 +168,48 @@
             "format": ","
           }
         ]
+      }
+    },
+    {
+      "transform": [
+        { "filter": "datum.yr >= YearFrom" },
+        { "regression": "total_gdp", "on": "total_crimes" }
+      ],
+      "mark": {
+        "type": "line",
+        "stroke": "#444",
+        "strokeDash": [6, 4],
+        "opacity": 0.8
+      },
+      "encoding": {
+        "x": { "field": "total_crimes", "type": "quantitative" },
+        "y": { "field": "total_gdp", "type": "quantitative" }
+      }
+    },
+   
+    {
+      "transform": [
+        { "filter": "datum.yr >= YearFrom" },
+        {
+          "window": [{ "op": "row_number", "as": "rn" }],
+          "sort": [{ "field": "yr", "order": "descending" }],
+          "groupby": ["state"]
+        },
+        { "filter": "datum.rn == 1" },
+        { "filter": "States != null && datum.state == States" }
+      ],
+      "mark": {
+        "type": "text",
+        "dx": 8,
+        "dy": -6,
+        "fontSize": 12,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "x": { "field": "total_crimes", "type": "quantitative" },
+        "y": { "field": "total_gdp", "type": "quantitative" },
+        "text": { "field": "state" },
+        "color": { "field": "state", "type": "nominal", "legend": null }
       }
     }
   ]
