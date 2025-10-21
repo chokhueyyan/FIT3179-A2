@@ -100,6 +100,20 @@
         text-align: center;
         max-width: 980px;
       }
+      .desc1 {
+        margin: 8px auto 14px;
+        color: #666;
+        font-size: 14px;
+        max-width: 980px;
+      }
+      .desc2 {
+        margin: 8px auto 14px;
+        color: #666;
+        font-size: 14px;
+        max-width: 980px;
+        text-align: end;
+      }
+
       /* row to place two cards side-by-side */
       .cards-row {
         display: flex;
@@ -156,7 +170,7 @@
         text-align: center;
         font-weight: 900;
         font-size: 24px;
-        background: linear-gradient(90deg, #f6d7fc 0%, #d6fcba 100%);
+        background: linear-gradient(90deg, #f3baff 0%, #d6fcba 100%);
         border: 1px solid rgba(0, 0, 0, 0.05);
         border-radius: 10px;
         padding: 10px 16px;
@@ -228,6 +242,8 @@
         gap: 10px 14px;
         justify-content: center;
         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+        align-content: center;
+        height: 80px;
       }
       .vega-embed .vega-bindings label {
         font: 600 12px/1.2 system-ui, sans-serif;
@@ -252,6 +268,43 @@
         height: 16px !important;
       }
 
+      .subtitle-desc {
+        text-align: center;
+        font: 600 22px/1.2 system-ui, sans-serif;
+        color:#5a5a5a;
+
+      }
+      .motor {
+        color: #b15928
+      }
+
+      .other {
+        color: #cab2d6
+      }
+
+      .break-in {
+        color: #ff7f00
+      }
+      .selangor {
+        color:#1b9e77
+      }
+      .perlis {
+        color: #bc80bd
+      }
+      .kl {
+        color: #fb8072
+      }
+
+      .johor {
+        color: #8dd3c7
+      }
+
+      .sarawak {
+        color: #8c96c6
+      }
+      .sabah {
+        color: #ffed6f
+      }
 
     </style>
   </head>
@@ -263,10 +316,13 @@
         <span class="gdp">GDP</span> (Gross Domestic Profit) in Malaysia from
         2016 to 2023
       </h1>
-      <p class="subtitle">
+      <p class="subtitle-desc">
+        Explore how crime rate and GDP affects one another!
+      </p>
+      <!-- <p class="subtitle">
         Use the <span class="dropdown">dropdowns</span> to filter year and/or
         crime type. Bars show <span class="dropdown">detailed breakdown</span>.
-      </p>
+      </p> -->
 
       <!-- Two map cards side-by-side -->
       <div class="cards-row">
@@ -276,8 +332,7 @@
             <h2 class="card__title">Total Crimes by State</h2>
           </div>
           <p class="card__desc">
-            Circle size shows population; color shows total crimes. Toggle year
-            and type above.
+            Circle size shows <span class="dropdown">population</span>; color shows <span class="dropdown">total crimes</span>. Toggle to <span class="dropdown">filter</span> view.
           </p>
           <div class="vizbox">
             <div id="stackednmap"></div>
@@ -290,12 +345,33 @@
             <h2 class="card__title">GDP Density by State</h2>
           </div>
           <p class="card__desc">
-            Darker greens indicate higher GDP per person (GDP ÷ population). Use
-            the controls above to switch year.
+            Darker greens indicate higher GDP density (GDP ÷ population). Toggle to <span class="dropdown">filter</span> view
           </p>
           <div class="vizbox">
             <div id="choro"></div>
           </div>
+        </section>
+      </div>
+
+      <div class="cards-row">
+        <!-- Card A description -->
+        <section class="card card--half">
+          <p class="desc1">
+        <span class="dropdown">Selangor</span> records the <span class="dropdown">highest</span>  overall crime; <span class="dropdown">Perlis</span> the <span class="dropdown">lowest</span> . <br>
+        Higher <span class="dropdown">population</span> generally aligns with higher total <span class="dropdown">crimes</span> . <br>
+        Most crimes are <span class="motor">motorcycle thefts</span>, <span class="other">other thefts</span> and <span class="break-in">break-ins</span>.
+      </p>
+          
+        </section>
+
+        <!-- Card B description -->
+        <section class="card card--half">
+          
+          <p class="desc2">
+        <span class="dropdown">Kuala Lumpur</span> leads GDP density; <span class="dropdown">Pulau Pinang</span> is second. <br>
+        <span class="dropdown">Sarawak</span> and <span class="dropdown">Selangor</span> alternate third and fourth across years. <br>
+        Not the most populous, yet highest by GDP density.</p>
+          
         </section>
       </div>
 
@@ -304,30 +380,70 @@
       <section class="card">
         <p class="card__desc">
           Use the <span class="dropdown">state selector</span> to focus any
-          state. Lines show year-to-year trajectories from 2016–2023.
+          state, <span class="dropdown">slider</span> to see trend over selected year range.
         </p>
         <div class="vizbox">
           <div id="line"></div>
         </div>
       </section>
+      <div class="cards-row">
+        <!-- Card A description -->
+        <section class="card card--half">
+          <p class="desc1">
+        Broad <span class="dropdown">decline</span> of crime rates especially from 2019 to 2021. <br>
+        Likely coincides with COVID-19 restrictions. <br>
+        <span class="selangor">Selangor</span> remains highest; <span class="perlis">Perlis</span> stay lowest. </p>
+          
+        </section>
 
-       <h3 class="subsection">Comparison</h3>
+        <!-- Card B description -->
+        <section class="card card--half">
+          
+          <p class="desc2">
+        <span class="dropdown">Steady growth</span> overall with a mild dip in 2020, then rebound. <br>
+        <span class="selangor">Selangor</span> leads total GDP in Malaysia; <span class="kl">Kuala Lumpur</span> is next, <br>
+        with <span class="johor">Johor</span> and <span class="sarawak">Sarawak</span> close behind.</p>
+          
+        </section>
+      </div>
+
+       <h3 class="subsection">Comparison View</h3>
       <section class="card">
         <p class="card__desc">
           Use the <span class="dropdown">state selector</span> to focus any
-          state. Lines show year-to-year trajectories from 2016–2023.
+          state, <span class="dropdown">slider</span> to see trend over selected year range.
         </p>
         <div class="vizbox">
           <div id="scatter"></div>
         </div>
       </section>
+
+      <div class="cards-row">
+        <!-- Card A description -->
+        <section class="card card--half">
+          <p class="desc1">
+        <span class="dropdown">Across states</span>,larger populations are associated with both higher GDP <br>
+        and more recorded crimes; the cross-state trend is positive.<br>
+        </section>
+
+        <!-- Card B description -->
+        <section class="card card--half">
+          
+          <p class="desc2">
+        <span class="dropdown">Within state</span>, most year-to-year lines slope downward, higher GDP years <br>
+         tend to coincide with fewer crimes, with <span class="sabah">Sabah</span> as the main exception.
+
+          
+        </section>
+      </div>
+      
        <div class="metadatabox">
-          <div class="metadata">Created by Chok Huey Yan on 19 Oct 2025 <br><br></br>Data Sources:</br> 
-            <br>  1. crime - https://data.gov.my/data-catalogue/crime_district?state=johor&district=all&category=assault&type=theft-other&visual=table  </br>
-<br>2. malaysia coords - https://www.kaggle.com/datasets/mypapit/malaysiancity   </br>
-<br>3. education - https://open.dosm.gov.my/data-catalogue/completion_school_state?state=johor&stage=secondary-upper&sex=male&visual=table   </br>
-<br>4. population - https://open.dosm.gov.my/data-catalogue/population_state?state=kedah&visual=table   </br>
-<br>5. economy - https://open.dosm.gov.my/data-catalogue/gdp_state_real_supply?series=abs&state=kelantan&sector=p0&visual=table </br>
+          <div class="metadata">Created by Chok Huey Yan on 19 Oct 2025 <br><br></br>Data Sources:
+            <br>  1. crime - https://data.gov.my/data-catalogue/crime_district?state=johor&district=all&category=assault&type=theft-other&visual=table 
+<br>2. malaysia coords - https://www.kaggle.com/datasets/mypapit/malaysiancity   
+<br>3. education - https://open.dosm.gov.my/data-catalogue/completion_school_state?state=johor&stage=secondary-upper&sex=male&visual=table
+<br>4. population - https://open.dosm.gov.my/data-catalogue/population_state?state=kedah&visual=table 
+<br>5. economy - https://open.dosm.gov.my/data-catalogue/gdp_state_real_supply?series=abs&state=kelantan&sector=p0&visual=table 
 </div>
         </div>
     </div>
