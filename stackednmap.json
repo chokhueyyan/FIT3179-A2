@@ -75,7 +75,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -93,7 +92,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -228,7 +226,7 @@
             "type": "text",
             "align": "right",
             "baseline": "middle",
-            "dx": -12,
+            "dx": -8,
             "fontSize": 8,
             "fontStyle": "italic"
           },
@@ -242,56 +240,25 @@
         },
         {
           "data": {
-            "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
+            "values": [
+              {
+                "x": 300,
+                "y": 165,
+                "label": "Selangor has the highest crime rate overall"
+              }
+            ]
           },
-          "transform": [
-            { "filter": "YearSel == null || year(datum.date) == YearSel" },
-            { "filter": "TypeSel == null || datum.type == TypeSel" },
-            { "filter": "States == null || datum.state == States" },
-
-            {
-              "aggregate": [
-                { "op": "sum", "field": "crimes", "as": "total_crimes" },
-                {
-                  "op": "max",
-                  "field": "total_population",
-                  "as": "total_population"
-                }
-              ],
-              "groupby": ["state", "lat", "lon"]
-            },
-            {
-              "calculate": "datum.total_population * 1000",
-              "as": "pop_people"
-            },
-            {
-              "window": [{ "op": "rank", "as": "rk" }],
-              "sort": [
-                { "field": "pop_people", "order": "descending" },
-                { "field": "state", "order": "ascending" }
-              ]
-            },
-            { "filter": "datum.rk == 1" },
-
-            {
-              "calculate": "datum.state + ' has the highest population'",
-              "as": "label"
-            }
-          ],
           "mark": {
             "type": "text",
-            "align": "left",
-            "baseline": "bottom",
-            "dx": 8,
-            "dy": -6,
+            "aria": false,
+            "align": "right",
             "fontSize": 12,
             "fontWeight": "bold",
-            "color": "black",
-            "strokeWidth": 3
+            "color": "black"
           },
           "encoding": {
-            "longitude": { "field": "lon", "type": "quantitative" },
-            "latitude": { "field": "lat", "type": "quantitative" },
+            "x": { "field": "x", "type": "quantitative", "scale": null },
+            "y": { "field": "y", "type": "quantitative", "scale": null },
             "text": { "field": "label" }
           }
         }
@@ -304,13 +271,6 @@
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
-      "params": [
-        {
-          "name": "TypeLegend",
-          "select": { "type": "point", "fields": ["type"], "empty": "all" },
-          "bind": "legend"
-        }
-      ],
       "transform": [
         { "calculate": "year(toDate(datum.date))", "as": "yr" },
         { "filter": "YearSel == null || datum.yr == YearSel" },
@@ -325,80 +285,117 @@
           "groupby": ["state", "type"]
         }
       ],
-      "mark": { "type": "bar" },
-      "encoding": {
-        "x": {
-          "field": "state",
-          "type": "nominal",
-          "title": "State",
-          "axis": { "labelAngle": -35 },
-          "sort": {
-            "op": "sum",
-            "field": "total_crimes",
-            "order": "descending"
+      "layer": [
+        {
+          "params": [
+            {
+              "name": "TypeLegend",
+              "select": { "type": "point", "fields": ["type"], "empty": "all" },
+              "bind": "legend"
+            }
+          ],
+          "mark": { "type": "bar" },
+          "encoding": {
+            "x": {
+              "field": "state",
+              "type": "nominal",
+              "title": "State",
+              "axis": { "labelAngle": -35 },
+              "sort": {
+                "op": "sum",
+                "field": "total_crimes",
+                "order": "descending"
+              }
+            },
+            "y": {
+              "field": "total_crimes",
+              "type": "quantitative",
+              "title": "Total crimes",
+              "axis": { "format": ",.0f", "tickCount": 6 }
+            },
+            "order": {
+              "field": "total_crimes",
+              "type": "quantitative",
+              "sort": "descending"
+            },
+            "color": {
+              "field": "type",
+              "type": "nominal",
+              "legend": {
+                "title": "Crime Type (Click to filter)",
+                "columns": 1,
+                "labelExpr": "replace(datum.label, /_/g, ' ')"
+              },
+              "scale": {
+                "domain": [
+                  "causing_injury",
+                  "murder",
+                  "rape",
+                  "robbery_gang_armed",
+                  "robbery_gang_unarmed",
+                  "robbery_solo_armed",
+                  "robbery_solo_unarmed",
+                  "break_in",
+                  "theft_other",
+                  "theft_vehicle_lorry",
+                  "theft_vehicle_motorcar",
+                  "theft_vehicle_motorcycle"
+                ],
+                "range": [
+                  "#a6cee3",
+                  "#1f78b4",
+                  "#c994c7",
+                  "#999999",
+                  "#fb9a99",
+                  "#e31a1c",
+                  "#fdbf6f",
+                  "#ff7f00",
+                  "#cab2d6",
+                  "#6a3d9a",
+                  "#ffff99",
+                  "#b15928"
+                ]
+              },
+              "sort": {
+                "op": "sum",
+                "field": "total_crimes",
+                "order": "descending"
+              }
+            },
+            "tooltip": [
+              { "field": "state", "title": "State" },
+              { "field": "type", "title": "Crime type" },
+              {
+                "field": "total_crimes",
+                "title": "Total crimes",
+                "format": ","
+              }
+            ]
           }
         },
-        "y": {
-          "field": "total_crimes",
-          "type": "quantitative",
-          "title": "Total crimes",
-          "axis": { "format": ",.0f", "tickCount": 6 }
-        },
-        "order": {
-          "field": "total_crimes",
-          "type": "quantitative",
-          "sort": "descending"
-        },
-        "color": {
-          "field": "type",
-          "type": "nominal",
-          "legend": {
-            "title": "Crime Type (Click to filter)",
-            "columns": 1,
-            "labelExpr": "replace(datum.label, /_/g, ' ')"
-          },
-          "scale": {
-            "domain": [
-              "causing_injury",
-              "murder",
-              "rape",
-              "robbery_gang_armed",
-              "robbery_gang_unarmed",
-              "robbery_solo_armed",
-              "robbery_solo_unarmed",
-              "break_in",
-              "theft_other",
-              "theft_vehicle_lorry",
-              "theft_vehicle_motorcar",
-              "theft_vehicle_motorcycle"
-            ],
-            "range": [
-              "#a6cee3",
-              "#1f78b4",
-              "#c994c7",
-              "#999999",
-              "#fb9a99",
-              "#e31a1c",
-              "#fdbf6f",
-              "#ff7f00",
-              "#cab2d6",
-              "#6a3d9a",
-              "#ffff99",
-              "#b15928"
+        {
+          "data": {
+            "values": [
+              { "x": 230, "y": 18, "label": "Selangor has the highest crime rate overall" },
+              { "x": 500, "y": 250, "label": "Perlis has the lowest crime rate overall" }
             ]
           },
-          "sort": {
-            "op": "sum",
-            "field": "total_crimes",
-            "order": "descending"
+          "mark": {
+            "type": "text",
+            "aria": false,
+            "align": "right",
+            "fontSize": 10,
+            "fontWeight": "lighter",
+            "fontStyle": "italic",
+            "color": "black"
+          },
+          "encoding": {
+            "x": { "field": "x", "type": "quantitative", "scale": null },
+            "y": { "field": "y", "type": "quantitative", "scale": null },
+            "text": { "field": "label" }
           }
-        },
-        "tooltip": [
-          { "field": "state", "title": "State" },
-          { "field": "type", "title": "Crime type" },
-          { "field": "total_crimes", "title": "Total crimes", "format": "," }
-        ]
-      }
+        }
+      ]
     }
   ],
   "resolve": { "scale": { "color": "independent", "size": "independent" } },
