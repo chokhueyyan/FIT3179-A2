@@ -171,7 +171,7 @@
             "type": "text",
             "align": "right",
             "baseline": "middle",
-            "dx": -12,
+            "dx": -8,
             "fontSize": 8,
             "fontStyle": "italic"
           },
@@ -182,6 +182,30 @@
             "text": { "field": "state" },
             "color": { "value": "black" }
           }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "x": 350,
+                "y": 180,
+                "label": "Kuala Lumpur has the highest GDP density overall"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "aria": false,
+            "align": "right",
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "black"
+          },
+          "encoding": {
+            "x": { "field": "x", "type": "quantitative", "scale": null },
+            "y": { "field": "y", "type": "quantitative", "scale": null },
+            "text": { "field": "label" }
+          }
         }
       ]
     },
@@ -189,7 +213,7 @@
     {
       "width": 450,
       "height": 300,
-      "title": "GDP by State",
+      "title": "GDP Density by State",
       "data": {
         "url": "https://raw.githubusercontent.com/chokhueyyan/FIT3179/refs/heads/main/Crime_Econ.csv"
       },
@@ -212,41 +236,73 @@
           "sort": [{ "field": "val", "order": "descending" }]
         }
       ],
-      "mark": { "type": "bar" },
-      "encoding": {
-        "x": {
-          "field": "state",
-          "type": "nominal",
-          "sort": { "field": "val", "order": "descending" },
-          "axis": { "labelAngle": -35 },
-          "title": "State"
-        },
-        "y": {
-          "field": "val",
-          "type": "quantitative",
-          "title": "GDP Density",
-          "axis": { "format": ",.0f", "tickCount": 6 }
-        },
-        "color": {
-          "condition": { "test": "datum.rank_val <= 3", "value": "#006d2c" },
-          "value": "#c8c8c8"
-        },
-        "opacity": {
-          "condition": { "test": "datum.rank_val <= 3", "value": 1 },
-          "value": 0.6
-        },
-        "tooltip": [
-          { "field": "state", "type": "nominal", "title": "State" },
-          { "field": "row.yr", "type": "quantitative", "title": "Year" },
-          {
-            "field": "val",
-            "type": "quantitative",
-            "title": "GDP Density",
-            "format": ".2f"
+      "layer": [
+        {
+          "mark": { "type": "bar" },
+          "encoding": {
+            "x": {
+              "field": "state",
+              "type": "nominal",
+              "sort": { "field": "val", "order": "descending" },
+              "axis": { "labelAngle": -35 },
+              "title": "State"
+            },
+            "y": {
+              "field": "val",
+              "type": "quantitative",
+              "title": "GDP Density",
+              "axis": { "format": ",.0f", "tickCount": 6 }
+            },
+            "color": {
+              "condition": {
+                "test": "datum.rank_val <= 3",
+                "value": "#006d2c"
+              },
+              "value": "#c8c8c8"
+            },
+            "opacity": {
+              "condition": { "test": "datum.rank_val <= 3", "value": 1 },
+              "value": 0.6
+            },
+            "tooltip": [
+              { "field": "state", "type": "nominal", "title": "State" },
+              { "field": "row.yr", "type": "quantitative", "title": "Year" },
+              {
+                "field": "val",
+                "type": "quantitative",
+                "title": "GDP Density",
+                "format": ".2f"
+              }
+            ]
           }
-        ]
-      }
+        },
+        {
+          "data": {
+            "values": [
+              {
+                "x": 350,
+                "y": 60,
+                "label": "Kuala Lumpur and Pulau Pinang dominate highest GDP Density overall"
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "aria": false,
+            "align": "right",
+            "fontSize": 10,
+            "fontWeight": "lighter",
+            "fontStyle": "italic",
+            "color": "black"
+          },
+          "encoding": {
+            "x": { "field": "x", "type": "quantitative", "scale": null },
+            "y": { "field": "y", "type": "quantitative", "scale": null },
+            "text": { "field": "label" }
+          }
+        }
+      ]
     }
   ],
-  "spacing": 60
+  "spacing": 75
 }
