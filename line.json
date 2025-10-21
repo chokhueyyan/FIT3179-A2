@@ -20,7 +20,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -38,7 +37,6 @@
           "Perak",
           "Perlis",
           "Pulau Pinang",
-          "Putrajaya",
           "Sabah",
           "Sarawak",
           "Selangor",
@@ -114,7 +112,6 @@
               "Perak",
               "Perlis",
               "Pulau Pinang",
-              "Putrajaya",
               "Sabah",
               "Sarawak",
               "Selangor",
@@ -203,7 +200,6 @@
               "Perak",
               "Perlis",
               "Pulau Pinang",
-              "Putrajaya",
               "Sabah",
               "Sarawak",
               "Selangor",
@@ -223,8 +219,7 @@
               "#ffed6f",
               "#8c96c6",
               "#1b9e77",
-              "#e7298a",
-              "#66a61e"
+              "#e7298a"
             ]
           }
         },
